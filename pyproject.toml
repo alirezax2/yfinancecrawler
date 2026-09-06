@@ -1,0 +1,23 @@
+[project]
+name = "yfinancecrawler"
+version = "0.1.0"
+description = "Daily Yahoo Finance market data ingestion pipeline storing Parquet dataset to Hugging Face"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "exchange-calendars>=4.5.0",
+    "huggingface-hub>=0.25.0",
+    "pandas>=2.2.0",
+    "pyarrow>=15.0.0",
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.66.0",
+    "yfinance>=1.7.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

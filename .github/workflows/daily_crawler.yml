@@ -1,0 +1,67 @@
+name: Daily Yahoo Finance Ingestion
+
+on:
+  schedule:
+    # Runs Tuesday through Saturday at 01:00 UTC (after US market close Mon-Fri)
+    - cron: '0 1 * * 2-6'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force run even if market was closed on previous day'
+        required: false
+        type: boolean
+        default: false
+      tickers_limit:
+        description: 'Limit number of tickers to process (0 for all)'
+        required: false
+        type: number
+        default: 0
+      no_upload:
+        description: 'Skip upload to Hugging Face'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  crawl-and-sync:
+    name: Crawl Yahoo Finance and Sync to Hugging Face
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v9
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run market data ingestion pipeline
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_YFINANCE_DATASET: ${{ vars.HF_YFINANCE_DATASET || 'AmirTrader/YahooFinance' }}
+          TD_DATASET: ${{ vars.TD_DATASET || 'AmirTrader/TradingViewData' }}
+        run: |
+          CMD_ARGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            CMD_ARGS="$CMD_ARGS --force"
+          fi
+          if [ "${{ inputs.no_upload }}" = "true" ]; then
+            CMD_ARGS="$CMD_ARGS --no-upload"
+          fi
+          if [ "${{ inputs.tickers_limit }}" -gt 0 ] 2>/dev/null; then
+            CMD_ARGS="$CMD_ARGS --tickers-limit ${{ inputs.tickers_limit }}"
+          fi
+
+          echo "Running: uv run python main.py $CMD_ARGS"
+          uv run python main.py $CMD_ARGS
