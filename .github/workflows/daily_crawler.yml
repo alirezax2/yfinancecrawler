@@ -2,8 +2,8 @@ name: Daily Yahoo Finance Ingestion
 
 on:
   schedule:
-    # Runs Tuesday through Saturday at 01:00 UTC (after US market close Mon-Fri)
-    - cron: '0 1 * * 2-6'
+    # Runs Monday through Friday at 22:00 UTC (after US market close Mon-Fri)
+    - cron: '0 22 * * 1-5'
   workflow_dispatch:
     inputs:
       force:
