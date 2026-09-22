@@ -62,12 +62,12 @@ def main():
 
     # 1. Market calendar check
     if not args.force:
-        logger.info("Checking US Market session status for previous day...")
-        was_open = market_calendar.was_market_open_previous_day()
+        logger.info("Checking US Market session status for today...")
+        was_open = market_calendar.was_market_open_today()
         if not was_open:
-            logger.info("US Market was CLOSED on the previous day. Skipping daily ingestion. Use --force to override.")
+            logger.info("US Market was CLOSED today. Skipping daily ingestion. Use --force to override.")
             return 0
-        logger.info("US Market was OPEN on the previous day. Proceeding with data ingestion.")
+        logger.info("US Market was OPEN today. Proceeding with data ingestion.")
     else:
         logger.info("Force flag enabled. Bypassing market calendar check.")
 

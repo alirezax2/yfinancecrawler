@@ -31,6 +31,26 @@ def was_market_open_on_date(check_date: datetime.date) -> bool:
         return check_date.weekday() < 5
 
 
+def was_market_open_today(reference_date: Optional[datetime.date] = None) -> bool:
+    """
+    Checks whether the US market was open today (reference_date, defaulting to UTC today).
+    
+    Args:
+        reference_date: Optional reference date (defaults to UTC today).
+        
+    Returns:
+        bool: True if reference_date was an active market session.
+    """
+    if reference_date is None:
+        reference_date = datetime.datetime.now(datetime.timezone.utc).date()
+    
+    is_open = was_market_open_on_date(reference_date)
+    logger.info(
+        f"Checking market session for {reference_date}: Market open = {is_open}"
+    )
+    return is_open
+
+
 def was_market_open_previous_day(reference_date: Optional[datetime.date] = None) -> bool:
     """
     Checks whether the US market was open on the day prior to reference_date (defaulting to today).
