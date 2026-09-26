@@ -2,12 +2,12 @@ name: Daily Yahoo Finance Ingestion
 
 on:
   schedule:
-    # Runs Monday through Friday at 22:00 UTC (after US market close Mon-Fri)
-    - cron: '0 22 * * 1-5'
+    # Runs Tuesday through Saturday at 01:00 UTC (which corresponds to Monday-Friday 9:00 PM EDT / 8:00 PM EST, after US post-market close)
+    - cron: '0 1 * * 2-6'
   workflow_dispatch:
     inputs:
       force:
-        description: 'Force run even if market was closed on previous day'
+        description: 'Force execution (legacy flag)'
         required: false
         type: boolean
         default: false

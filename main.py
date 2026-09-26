@@ -4,7 +4,6 @@ import sys
 from datetime import datetime, timezone
 import config
 import storage
-import market_calendar
 from ticker_loader import load_tickers_from_hf
 from downloader import BatchDownloader
 
@@ -60,18 +59,7 @@ def main():
     logger.info(" Starting Yahoo Finance Daily Ingestion Pipeline ")
     logger.info("==================================================")
 
-    # 1. Market calendar check
-    if not args.force:
-        logger.info("Checking US Market session status for today...")
-        was_open = market_calendar.was_market_open_today()
-        if not was_open:
-            logger.info("US Market was CLOSED today. Skipping daily ingestion. Use --force to override.")
-            return 0
-        logger.info("US Market was OPEN today. Proceeding with data ingestion.")
-    else:
-        logger.info("Force flag enabled. Bypassing market calendar check.")
-
-    # 2. Sync existing state from Hugging Face if enabled
+    # 1. Sync existing state from Hugging Face if enabled
     if not args.no_sync:
         storage.sync_from_hf()
 

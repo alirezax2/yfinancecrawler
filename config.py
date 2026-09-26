@@ -8,10 +8,11 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 
 # Hugging Face Settings
-HF_TOKEN = os.getenv("HF_TOKEN", "")
-HF_YFINANCE_DATASET = os.getenv("HF_YFINANCE_DATASET", os.getenv("HF_DATASETS", "AmirTrader/YahooFinance"))
-TD_DATASET = os.getenv("TD_DATASET", "AmirTrader/TradingViewData")
-TD_FILENAME = os.getenv("TD_FILENAME", "america.csv")
+HF_TOKEN = os.getenv("HF_TOKEN", "").strip()
+_raw_dataset = os.getenv("HF_YFINANCE_DATASET", os.getenv("HF_DATASETS", "AmirTrader/YahooFinance")).strip()
+HF_YFINANCE_DATASET = _raw_dataset.replace("DATASETS=", "").strip()
+TD_DATASET = os.getenv("TD_DATASET", "AmirTrader/TradingViewData").strip()
+TD_FILENAME = os.getenv("TD_FILENAME", "america.csv").strip()
 
 # Crawling & Ingestion Configuration (conservative defaults per .gemini/SKILL.md)
 HISTORY_PERIOD_YEARS = int(os.getenv("HISTORY_PERIOD_YEARS", "7"))
